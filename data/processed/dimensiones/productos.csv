@@ -1,0 +1,19 @@
+categoria_id,nombre,descripcion,precio_lista,activo
+3,Buzo Hoodie,"Buzo Hoodie calidad premium, temporada 2025",29569.23,False
+3,Buzo Hoodie,"Buzo Hoodie calidad premium, temporada 2025",29569.23,True
+3,Campera Trucker,"Campera Trucker calidad premium, temporada 2025",36700.58,False
+3,Campera Trucker,"Campera Trucker calidad premium, temporada 2025",36700.58,True
+3,Sweater Lana,"Sweater Lana calidad premium, temporada 2025",32525.33,True
+4,Cinturón Cuero,"Cinturón Cuero calidad premium, temporada 2025",33144.89,True
+4,Gorra Snapback,"Gorra Snapback calidad premium, temporada 2025",28716.74,False
+4,Gorra Snapback,"Gorra Snapback calidad premium, temporada 2025",28716.74,True
+2,Chupín Gabardina,"Chupín Gabardina calidad premium, temporada 2025",33823.38,True
+2,Jean Slim Fit,"Jean Slim Fit calidad premium, temporada 2025",21871.44,False
+2,Jean Slim Fit,"Jean Slim Fit calidad premium, temporada 2025",21871.44,True
+2,Jogging Urban,"Jogging Urban calidad premium, temporada 2025",41361.66,False
+2,Jogging Urban,"Jogging Urban calidad premium, temporada 2025",41361.66,True
+1,Musculosa Deportiva,"Musculosa Deportiva calidad premium, temporada 2025",32320.56,False
+1,Musculosa Deportiva,"Musculosa Deportiva calidad premium, temporada 2025",32320.56,True
+1,Remera Básica Algodón,"Remera Básica Algodón calidad premium, temporada 2025",34182.8,False
+1,Remera Básica Algodón,"Remera Básica Algodón calidad premium, temporada 2025",34182.8,True
+1,Remera Oversize,"Remera Oversize calidad premium, temporada 2025",32677.97,True

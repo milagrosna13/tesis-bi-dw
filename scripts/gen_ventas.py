@@ -3,9 +3,41 @@ import random
 from datetime import datetime, timedelta
 import os
 import sys
+from collections import defaultdict
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config.db_config import get_connection
+
+def obtener_empleados_por_sucursal():
+    """Obtiene los empleados con su fecha de ingreso agrupados por sucursal"""
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT e.id, s.nombre, e.fecha_ingreso
+            FROM empleados e
+            JOIN sucursales s ON e.sucursal_id = s.id
+            WHERE e.cargo <> 'Supervisor'
+            ORDER BY s.nombre, e.fecha_ingreso;
+        """)
+        empleados_db = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        # Agrupar empleados por sucursal con su fecha de ingreso
+        #defaultdict con lista como valor por defecto
+        empleados_por_sucursal = defaultdict(list)
+
+        for emp_id, sucursal_nombre, fecha_ingreso in empleados_db:
+            empleados_por_sucursal[sucursal_nombre].append({
+                'id': emp_id,
+                'fecha_ingreso': fecha_ingreso
+            })
+
+        return dict(empleados_por_sucursal)
+    except Exception as e:
+        print(f"Error al obtener empleados: {e}")
+        return {}
 
 def obtener_promociones():
     """Obtiene las promociones desde la base de datos"""
@@ -41,6 +73,7 @@ def aplicar_promocion(precio_original, fecha_venta, promos_db):
     return precio_original, None   
 def generar_ventas_csv():
     random.seed(42)
+    empleados_por_sucursal = obtener_empleados_por_sucursal()
     promos_db = obtener_promociones()
     ruta_base = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw')
     ruta_productos = os.path.join(ruta_base, 'maestro_productos.xlsx')
@@ -67,7 +100,6 @@ def generar_ventas_csv():
         )
         dni = random.choice(dnis)
         metodo_pago=random.choice([1,2,3,4,5])
-        empleado= random.choice([1,2,3,4,5,6,7,8,9,10])
         # Determinar canal y sucursal
         canales = ['Presencial', 'Web']
         canal = random.choices(
@@ -79,6 +111,24 @@ def generar_ventas_csv():
             sucursal = 'Tienda Online'
         else:  # Presencial
             sucursal = random.choice(['Centro', 'Norte', 'Shopping'])
+
+        empleados_sucursal = empleados_por_sucursal.get(sucursal)
+
+        if not empleados_sucursal:
+            print(f"Advertencia: No hay empleados para la sucursal {sucursal}")
+            continue
+
+        empleados_disponibles = [
+            emp['id']
+            for emp in empleados_sucursal
+            if emp['fecha_ingreso'] <= fecha.date()
+        ]
+
+        if not empleados_disponibles:
+            print(f"Advertencia: No hay empleados disponibles en {sucursal} para la fecha {fecha.date()}")
+            continue
+
+        empleado = random.choice(empleados_disponibles)
         
         #items del ticket
         cant_items=random.randint(1,5)
