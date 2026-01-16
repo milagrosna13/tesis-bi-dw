@@ -1,1 +1,107 @@
 categoria_nombre,producto_nombre,talle_id,color_id,sku,stock_minimo
+Remeras,Remera Básica Algodón,2,11,REM-TUR-M,12
+Remeras,Remera Básica Algodón,1,11,REM-TUR-S,3
+Remeras,Remera Básica Algodón,5,11,REM-TUR-XXL,4
+Remeras,Remera Básica Algodón,5,10,REM-CEL-XXL,11
+Remeras,Remera Básica Algodón,6,10,REM-CEL-UNICO,14
+Remeras,Remera Básica Algodón,1,10,REM-CEL-S,6
+Remeras,Remera Oversize,3,8,REM-VIO-L,4
+Remeras,Remera Oversize,2,8,REM-VIO-M,9
+Remeras,Remera Oversize,5,8,REM-VIO-XXL,8
+Remeras,Remera Oversize,4,8,REM-VIO-XL,12
+Remeras,Remera Oversize,6,2,REM-BLA-UNICO,9
+Remeras,Remera Oversize,4,2,REM-BLA-XL,11
+Remeras,Remera Oversize,1,2,REM-BLA-S,13
+Remeras,Musculosa Deportiva,1,4,MUS-AZU-S,7
+Remeras,Musculosa Deportiva,2,4,MUS-AZU-M,13
+Remeras,Musculosa Deportiva,6,4,MUS-AZU-UNICO,5
+Remeras,Musculosa Deportiva,5,4,MUS-AZU-XXL,8
+Remeras,Musculosa Deportiva,3,10,MUS-CEL-L,5
+Remeras,Musculosa Deportiva,1,10,MUS-CEL-S,9
+Remeras,Musculosa Deportiva,2,10,MUS-CEL-M,13
+Remeras,Musculosa Deportiva,6,10,MUS-CEL-UNICO,13
+Remeras,Musculosa Deportiva,5,10,MUS-CEL-XXL,15
+Pantalones,Jean Slim Fit,1,13,JEA-LAV-S,13
+Pantalones,Jean Slim Fit,2,13,JEA-LAV-M,9
+Pantalones,Jean Slim Fit,3,13,JEA-LAV-L,5
+Pantalones,Jean Slim Fit,6,13,JEA-LAV-UNICO,5
+Pantalones,Jean Slim Fit,5,1,JEA-NEG-XXL,12
+Pantalones,Jean Slim Fit,6,1,JEA-NEG-UNICO,8
+Pantalones,Jean Slim Fit,3,1,JEA-NEG-L,5
+Pantalones,Jean Slim Fit,4,1,JEA-NEG-XL,4
+Pantalones,Jean Slim Fit,2,1,JEA-NEG-M,4
+Pantalones,Chupín Gabardina,5,20,CHU-ÍND-XXL,3
+Pantalones,Chupín Gabardina,4,20,CHU-ÍND-XL,13
+Pantalones,Chupín Gabardina,3,20,CHU-ÍND-L,15
+Pantalones,Chupín Gabardina,6,20,CHU-ÍND-UNICO,4
+Pantalones,Chupín Gabardina,2,5,CHU-VER-M,14
+Pantalones,Chupín Gabardina,4,5,CHU-VER-XL,11
+Pantalones,Chupín Gabardina,1,5,CHU-VER-S,11
+Pantalones,Chupín Gabardina,3,5,CHU-VER-L,13
+Pantalones,Chupín Gabardina,5,1,CHU-NEG-XXL,15
+Pantalones,Chupín Gabardina,6,1,CHU-NEG-UNICO,11
+Pantalones,Chupín Gabardina,2,1,CHU-NEG-M,12
+Pantalones,Chupín Gabardina,1,1,CHU-NEG-S,10
+Pantalones,Chupín Gabardina,4,1,CHU-NEG-XL,4
+Pantalones,Jogging Urban,1,10,JOG-CEL-S,5
+Pantalones,Jogging Urban,6,10,JOG-CEL-UNICO,11
+Pantalones,Jogging Urban,4,10,JOG-CEL-XL,7
+Pantalones,Jogging Urban,5,10,JOG-CEL-XXL,6
+Pantalones,Jogging Urban,3,10,JOG-CEL-L,14
+Pantalones,Jogging Urban,6,4,JOG-AZU-UNICO,10
+Pantalones,Jogging Urban,3,4,JOG-AZU-L,6
+Pantalones,Jogging Urban,4,4,JOG-AZU-XL,4
+Pantalones,Jogging Urban,5,4,JOG-AZU-XXL,3
+Pantalones,Jogging Urban,2,20,JOG-ÍND-M,6
+Pantalones,Jogging Urban,1,20,JOG-ÍND-S,3
+Pantalones,Jogging Urban,5,20,JOG-ÍND-XXL,4
+Pantalones,Jogging Urban,3,20,JOG-ÍND-L,7
+Pantalones,Jogging Urban,4,20,JOG-ÍND-XL,6
+Abrigos,Campera Trucker,1,10,CAM-CEL-S,8
+Abrigos,Campera Trucker,6,10,CAM-CEL-UNICO,9
+Abrigos,Campera Trucker,4,10,CAM-CEL-XL,14
+Abrigos,Campera Trucker,6,16,CAM-BEI-UNICO,15
+Abrigos,Campera Trucker,1,16,CAM-BEI-S,6
+Abrigos,Campera Trucker,5,16,CAM-BEI-XXL,6
+Abrigos,Campera Trucker,2,16,CAM-BEI-M,5
+Abrigos,Campera Trucker,3,16,CAM-BEI-L,5
+Abrigos,Campera Trucker,2,2,CAM-BLA-M,4
+Abrigos,Campera Trucker,1,2,CAM-BLA-S,13
+Abrigos,Campera Trucker,4,2,CAM-BLA-XL,4
+Abrigos,Campera Trucker,3,2,CAM-BLA-L,5
+Abrigos,Buzo Hoodie,4,1,BUZ-NEG-XL,7
+Abrigos,Buzo Hoodie,1,1,BUZ-NEG-S,7
+Abrigos,Buzo Hoodie,6,1,BUZ-NEG-UNICO,14
+Abrigos,Buzo Hoodie,2,4,BUZ-AZU-M,3
+Abrigos,Buzo Hoodie,3,4,BUZ-AZU-L,14
+Abrigos,Buzo Hoodie,6,4,BUZ-AZU-UNICO,3
+Abrigos,Sweater Lana,2,4,SWE-AZU-M,13
+Abrigos,Sweater Lana,1,4,SWE-AZU-S,9
+Abrigos,Sweater Lana,5,4,SWE-AZU-XXL,12
+Abrigos,Sweater Lana,5,17,SWE-MAR-XXL,7
+Abrigos,Sweater Lana,1,17,SWE-MAR-S,13
+Abrigos,Sweater Lana,6,17,SWE-MAR-UNICO,6
+Abrigos,Sweater Lana,2,17,SWE-MAR-M,9
+Abrigos,Sweater Lana,3,17,SWE-MAR-L,13
+Accesorios,Gorra Snapback,5,3,GOR-ROJ-XXL,11
+Accesorios,Gorra Snapback,1,3,GOR-ROJ-S,5
+Accesorios,Gorra Snapback,6,3,GOR-ROJ-UNICO,4
+Accesorios,Gorra Snapback,3,3,GOR-ROJ-L,8
+Accesorios,Gorra Snapback,4,3,GOR-ROJ-XL,5
+Accesorios,Gorra Snapback,6,15,GOR-GRI-UNICO,13
+Accesorios,Gorra Snapback,3,15,GOR-GRI-L,5
+Accesorios,Gorra Snapback,1,15,GOR-GRI-S,4
+Accesorios,Gorra Snapback,5,15,GOR-GRI-XXL,14
+Accesorios,Gorra Snapback,2,15,GOR-GRI-M,7
+Accesorios,Cinturón Cuero,3,9,CIN-ROS-L,9
+Accesorios,Cinturón Cuero,1,9,CIN-ROS-S,3
+Accesorios,Cinturón Cuero,5,9,CIN-ROS-XXL,8
+Accesorios,Cinturón Cuero,6,9,CIN-ROS-UNICO,13
+Accesorios,Cinturón Cuero,6,11,CIN-TUR-UNICO,11
+Accesorios,Cinturón Cuero,4,11,CIN-TUR-XL,4
+Accesorios,Cinturón Cuero,5,11,CIN-TUR-XXL,14
+Accesorios,Cinturón Cuero,1,17,CIN-MAR-S,3
+Accesorios,Cinturón Cuero,3,17,CIN-MAR-L,8
+Accesorios,Cinturón Cuero,2,17,CIN-MAR-M,8
+Accesorios,Cinturón Cuero,4,17,CIN-MAR-XL,13
+Accesorios,Cinturón Cuero,6,17,CIN-MAR-UNICO,13
