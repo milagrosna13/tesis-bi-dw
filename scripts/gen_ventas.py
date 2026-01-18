@@ -80,7 +80,7 @@ def generar_ventas_csv():
     ruta_clientes = os.path.join(ruta_base, 'clientes.xlsx')
     try:
         df_productos = pd.read_excel(ruta_productos)
-        df_clientes = pd.read_excel(ruta_clientes)
+        df_clientes = pd.read_excel(ruta_clientes, dtype={'dni': str})
     except FileNotFoundError:
         print("no se encontro los excels de productos y clientes")
         return

@@ -4,69 +4,76 @@ import sys
 from pathlib import Path
 
 # Agregar la raíz del proyecto al path
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from config.db_config import get_connection
-
 
 def load_compras():
     conn = get_connection()
     cur = conn.cursor()
 
     try:
-        # 1. Cargar archivos procesados
         path_cabecera = 'data/processed/compras/oc_cabecera_proc.csv'
         path_detalle = 'data/processed/compras/oc_detalle_proc.csv'
 
         df_cab = pd.read_csv(path_cabecera)
         df_det = pd.read_csv(path_detalle)
 
-        # 2. Mapeos de negocio -> IDs de BD
-        # Proveedores: ID operacional -> ID BD
+        # Mapeos
         cur.execute("SELECT id FROM proveedores")
         proveedores_validos = {row[0] for row in cur.fetchall()}
-
-        # Variantes: SKU -> ID
         cur.execute("SELECT sku, id FROM variantes")
         map_variantes = dict(cur.fetchall())
 
-        print(f"Iniciando carga de {len(df_cab)} órdenes de compra...")
+        # IMPORTANTE: Obtener órdenes que YA están en la base de datos 
+        # para no intentar re-insertar sus detalles
+        cur.execute("SELECT id FROM ordenes_compra_cabecera")
+        ordenes_existentes = {row[0] for row in cur.fetchall()}
 
-        # 3. Iterar cabeceras
+        print(f"Procesando {len(df_cab)} órdenes...")
+
         for _, row in df_cab.iterrows():
-
-            proveedor_id = int(row['proveedor_id'])
-
-            if proveedor_id not in proveedores_validos:
-                print(f"Proveedor no encontrado: {proveedor_id}")
-                continue
+            
+            oc_nro = int(row['orden_compra_nro'])
+            
+        
+            # Si el ID ya existe, pasamos a la siguiente
+            cur.execute("SELECT id FROM ordenes_compra_cabecera WHERE id = %s", (oc_nro,))
+            if cur.fetchone():
+                continue # Salta a la siguiente orden
 
             # --- INSERT CABECERA ---
+               
             query_cab = """
-                INSERT INTO compras_cabecera (
-                     proveedor_id,fecha_pedido, estado_pedido, total_compra
-                ) VALUES (%s, %s, %s, %s)
+                INSERT INTO ordenes_compra_cabecera (
+                    id, proveedor_id, fecha_pedido, estado_pedido, total_compra
+                ) 
+                OVERRIDING SYSTEM VALUE -- <--- ESTO ES LA CLAVE
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING
                 RETURNING id;
             """
 
             cur.execute(query_cab, (
-                row['fecha_pedido'],
-                proveedor_id,
-                row['estado_pedido'],
-                row['total_compra']
-            ))
-
-            compra_id_db = cur.fetchone()[0]
+                    oc_nro, 
+                    int(row['proveedor_id']),           
+                    row['fecha_pedido'],
+                    row['estado_pedido'],
+                    row['total_compra']
+                ))
+            
+            res = cur.fetchone()
+            if not res: continue # Si el ON CONFLICT actuó, res será None
+            
+            compra_id_db = res[0]
 
             # --- INSERT DETALLES ---
-            items_oc = df_det[df_det['orden_compra_nro'] == row['orden_compra_nro']]
-
+            items_oc = df_det[df_det['orden_compra_nro'] == oc_nro]
             valores_detalle = []
 
             for _, item in items_oc.iterrows():
                 variante_id = map_variantes.get(item['sku_variante'])
-
                 if variante_id:
                     valores_detalle.append((
                         compra_id_db,
@@ -74,28 +81,22 @@ def load_compras():
                         item['cantidad'],
                         item['costo_unitario_pactado']
                     ))
-                else:
-                    print(f"SKU no encontrado: {item['sku_variante']}")
 
             if valores_detalle:
                 query_det = """
-                    INSERT INTO compras_detalle (
-                        compra_id, variante_id, cantidad, costo_unitario_pactado
-                    ) VALUES %s;
+                    INSERT INTO ordenes_compra_detalle (
+                        orden_compra_id, variante_id, cantidad, costo_unitario_pactado
+                    ) VALUES %s
+                    ON CONFLICT DO NOTHING;
                 """
                 execute_values(cur, query_det, valores_detalle)
 
-        # 4. Commit final
         conn.commit()
-        print("Carga de órdenes de compra finalizada correctamente.")
+        print("Carga finalizada de ordenes de compras.")
 
     except Exception as e:
         conn.rollback()
-        print(f"Error crítico en LOAD compras: {e}")
+        print(f"Error: {e}")
     finally:
         cur.close()
         conn.close()
-
-
-if __name__ == "__main__":
-    load_compras()

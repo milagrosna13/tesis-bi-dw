@@ -46,7 +46,7 @@ def generar_clientes(n=500): #defino la funcion solo crear 500 por defecto
             "email": f"{apellido.lower()}.{nombre.lower()}@{fake.free_email_domain()}",#fstring
             "fecha_nacimiento":fake.date_of_birth(minimum_age=18, maximum_age=80),
             "direccion":fake.street_address(),
-            "id_localidad": random.choice(ids_localidades),
+            "localidad_id": random.choice(ids_localidades),
             "fecha_alta": fake.date_between(start_date='-3y',end_date='today'),
             "genero":random.choice(['F','M','X'])
 

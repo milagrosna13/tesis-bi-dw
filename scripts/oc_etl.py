@@ -43,7 +43,8 @@ def transform_ordenes_compra():
     # Formateo
     df['proveedor_id'] = df['proveedor_id'].astype(int)
     df['costo_unitario_pactado'] = df['costo_unitario_pactado'].round(2)
-
+    # Pasamos a mayúsculas y quitamos espacios en blanco accidentales
+    df['sku_variante'] = df['sku_variante'].astype(str).str.strip().str.upper()
     # Subtotal
     df['subtotal'] = (df['cantidad'] * df['costo_unitario_pactado']).round(2)
 
