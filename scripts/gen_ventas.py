@@ -84,9 +84,12 @@ def generar_ventas_csv():
     except FileNotFoundError:
         print("no se encontro los excels de productos y clientes")
         return
-    info_productos = df_productos.set_index('SKU')[['Precio_Lista','Costo_Estimado']].to_dict('index')
+    info_productos = df_productos.set_index('SKU')[['Precio_Lista', 'Costo_Estimado', 'Activo', 'Fecha_Alta']].to_dict('index')    
     skus=list(info_productos.keys())
     dnis = df_clientes['dni'].tolist()
+
+    df_clientes['Fecha_Alta'] = pd.to_datetime(df_clientes['fecha_alta'])
+    info_clientes = df_clientes.set_index('dni')['fecha_alta'].to_dict()
 
     data_ventas=[]
     fecha_inicio=datetime(2024,1,1)
@@ -98,7 +101,12 @@ def generar_ventas_csv():
             days=random.randint(0,700),
             minutes=random.randint(0,1440)
         )
-        dni = random.choice(dnis)
+        fecha_venta_dt = fecha.date()
+                
+        clientes_validos = [dni for dni, f_alta in info_clientes.items() if f_alta.date() <= fecha_venta_dt]
+        if not clientes_validos:
+            continue # Si en esa fecha no había clientes, saltamos
+        dni = random.choice(clientes_validos)
         metodo_pago=random.choice([1,2,3,4,5])
         # Determinar canal y sucursal
         canales = ['Presencial', 'Web']
@@ -129,12 +137,18 @@ def generar_ventas_csv():
             continue
 
         empleado = random.choice(empleados_disponibles)
-        
+        productos_disponibles = [
+        sku for sku, datos in info_productos.items()
+        if datos['Activo'] == True and pd.to_datetime(datos['Fecha_Alta']).date() <= fecha_venta_dt
+        ]
+
+        if not productos_disponibles:
+            continue
         #items del ticket
         cant_items=random.randint(1,5)
         
         for _ in range(cant_items):
-            sku=random.choice(skus)
+            sku = random.choice(productos_disponibles)
             precio=info_productos[sku]['Precio_Lista']
             costo = info_productos[sku]['Costo_Estimado']
             #probalidad de 90 a 10 entre 1 o 2

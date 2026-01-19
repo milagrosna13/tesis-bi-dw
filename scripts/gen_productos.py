@@ -1,10 +1,14 @@
 import pandas as pd
 import random
 import os
+from faker import Faker
+
+fake= Faker('es_AR')
 
 
 def genera_catalogo():
     random.seed(42)
+    Faker.seed(0)
     categorias={
       "Remeras": ["Remera Básica Algodón", "Remera Oversize", "Musculosa Deportiva"],
         "Pantalones": ["Jean Slim Fit", "Chupín Gabardina", "Jogging Urban"],
@@ -61,6 +65,7 @@ def genera_catalogo():
                         "Costo_Estimado": round(costo_base, 2),
                         "SKU": sku,
                         "Stock_Minimo": random.randint(3, 15),
+                        "Fecha_Alta": fake.date_between(start_date='-3y', end_date='today'),
                         "Activo": random.choice([True, True, True, False])
                     })
     df = pd.DataFrame(data)

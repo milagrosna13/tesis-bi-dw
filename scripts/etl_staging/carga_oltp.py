@@ -21,6 +21,7 @@ def run_oltp_load():
         load_clientes()
         load_productos()   
         load_variantes()
+        load_compras()
         load_ventas()
 
         logging.info("Carga OLTP finalizada correctamente")

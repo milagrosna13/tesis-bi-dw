@@ -32,7 +32,7 @@ def load_productos():
     cur = conn.cursor()
     
     try:
-        # Limpiar tabla antes de cargar (opcional)
+        # Limpiar tabla antes de cargar
         cur.execute("TRUNCATE TABLE productos RESTART IDENTITY CASCADE")
         print("Tabla productos limpiada")
         
@@ -43,14 +43,16 @@ def load_productos():
         for _, row in df.iterrows():
             try:
                 cur.execute("""
-                    INSERT INTO productos (categoria_id, nombre, descripcion, precio_lista, activo)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO productos (categoria_id, nombre, descripcion, precio_lista,fecha_alta, activo)
+                    VALUES (%s, %s, %s, %s, %s,%s)
                 """, (
                     int(row['categoria_id']),
                     row['nombre'],
                     row['descripcion'],
                     float(row['precio_lista']),
+                    row['fecha_alta'],
                     bool(row['activo'])
+
                 ))
                 insertados += 1
                     

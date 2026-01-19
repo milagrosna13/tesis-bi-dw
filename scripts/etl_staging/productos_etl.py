@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 # Agregar la raíz del proyecto al path
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from config.db_config import get_connection
@@ -46,9 +46,13 @@ def etl_productos():
     
     print("Procesando productos...")
     productos = df.groupby(
-        ['Categoria', 'Producto'],as_index=False).agg({'Descripcion': 'first',
+        ['Categoria', 'Producto'], as_index=False
+    ).agg({
+        'Descripcion': 'first',
         'Precio_Lista': 'mean',   
-        'Activo': 'max' })
+        'Activo': 'max',
+        'Fecha_Alta': 'first'  
+    })
     
     
     # Limpieza
@@ -72,10 +76,10 @@ def etl_productos():
     
     # Preparar DataFrame final
     productos_final = productos[[
-        'categoria_id', 'Producto', 'Descripcion', 'Precio_Lista', 'Activo'
+        'categoria_id', 'Producto', 'Descripcion', 'Precio_Lista', 'Fecha_Alta','Activo'
     ]].copy()
     
-    productos_final.columns = ['categoria_id', 'nombre', 'descripcion', 'precio_lista', 'activo']
+    productos_final.columns = ['categoria_id', 'nombre', 'descripcion', 'precio_lista','fecha_alta', 'activo']
     productos_final = productos_final.reset_index(drop=True)
     
     # Guardar
@@ -83,7 +87,7 @@ def etl_productos():
     productos_final.to_csv(output_path, index=False, encoding='utf-8')
     
     print(f"{len(productos_final)} productos procesados {output_path}")
-    print(f"\nColumnas: categoria_id, nombre, descripcion, precio_lista, activo")
+    print(f"\nColumnas: categoria_id, nombre, descripcion, precio_lista,fecha alta, activo")
 
 
 if __name__ == "__main__":
