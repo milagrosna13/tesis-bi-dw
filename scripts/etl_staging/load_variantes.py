@@ -79,20 +79,22 @@ def load_variantes():
             try:
                 # Intentar insertar
                 cur.execute("""
-                    INSERT INTO variantes (producto_id, talle_id, color_id, sku, stock_minimo)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO variantes (producto_id, talle_id, color_id, sku, stock_minimo, activo)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     ON CONFLICT (sku) DO UPDATE SET
                         producto_id = EXCLUDED.producto_id,
                         talle_id = EXCLUDED.talle_id,
                         color_id = EXCLUDED.color_id,
-                        stock_minimo = EXCLUDED.stock_minimo
+                        stock_minimo = EXCLUDED.stock_minimo,
+                        activo = EXCLUDED.activo
                     RETURNING (xmax = 0) AS inserted
                 """, (
                     int(producto_id),
                     int(row['talle_id']),
                     int(row['color_id']),
                     row['sku'],
-                    int(row['stock_minimo'])
+                    int(row['stock_minimo']),
+                    bool(row['activo'])
                 ))
                 
                 result = cur.fetchone()

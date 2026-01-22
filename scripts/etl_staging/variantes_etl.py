@@ -45,14 +45,15 @@ def etl_variantes():
     
     print("Leyendo datos desde Excel...")
     df = pd.read_excel(raw_path)
-    
+    df['Activo'] = df['Activo'].astype(bool)
+
     print("Obteniendo colores y talles desde la base de datos...")
     colores_dict, talles_dict = obtener_diccionarios_bd()
     print(f" {len(colores_dict)} colores y {len(talles_dict)} talles cargados desde BD")
     
     print("Procesando variantes...")
     variantes = df[[
-        'Categoria', 'Producto', 'Color', 'Talle', 'SKU', 'Stock_Minimo'
+        'Categoria', 'Producto', 'Color', 'Talle', 'SKU', 'Stock_Minimo','Activo'
     ]].copy()
     
     # Limpieza
@@ -87,12 +88,12 @@ def etl_variantes():
     # Preparar DataFrame final
     # Nota: producto_id se asignará en el script de carga, aquí guardamos la referencia por nombre
     variantes_final = variantes[[
-        'Categoria', 'Producto', 'talle_id', 'color_id', 'SKU', 'Stock_Minimo'
+        'Categoria', 'Producto', 'talle_id', 'color_id', 'SKU', 'Stock_Minimo','Activo'
     ]].copy()
     
     variantes_final.columns = [
         'categoria_nombre', 'producto_nombre', 'talle_id', 
-        'color_id', 'sku', 'stock_minimo'
+        'color_id', 'sku', 'stock_minimo', 'activo'
     ]
     variantes_final = variantes_final.reset_index(drop=True)
     
@@ -101,7 +102,7 @@ def etl_variantes():
     variantes_final.to_csv(output_path, index=False, encoding='utf-8')
     
     print(f"{len(variantes_final)} variantes procesadas → {output_path}")
-    print(f"\nColumnas: categoria_nombre, producto_nombre, talle_id, color_id, sku, stock_minimo")
+    print(f"\nColumnas: categoria_nombre, producto_nombre, talle_id, color_id, sku, stock_minimo,activo")
     print("Nota: producto_id se resolverá en el script de carga")
 
 
