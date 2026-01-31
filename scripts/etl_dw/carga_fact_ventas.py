@@ -19,7 +19,7 @@ def cargar_fact_ventas():
     engine = get_engine()
     
     print("Cargando diccionarios de mapeo...")
-    map_producto  = get_mapeo(engine, "dim_producto", "producto_id_origen", "id_producto")
+    map_producto = get_mapeo(engine, "dim_producto", "producto_id_origen", "id_producto")    
     map_cliente   = get_mapeo(engine, "dim_cliente", "cliente_id_origen", "id_cliente")
     map_sucursal  = get_mapeo(engine, "dim_sucursal", "sucursal_id_origen", "id_sucursal")
     map_empleado  = get_mapeo(engine, "dim_empleado", "empleado_id_origen", "id_empleado")
@@ -29,15 +29,15 @@ def cargar_fact_ventas():
 
     print("Extrayendo datos de origen...")
     query_origen = """ 
-        SELECT 
+            SELECT 
             vc.id AS venta_id, vc.fecha_hora, vc.cliente_id, vc.sucursal_id, 
             vc.empleado_id, vc.canal_venta, mp.nombre AS metodo_pago_nombre,
-            v.producto_id, vd.cantidad, vd.precio_unitario_cobrado, 
+            vd.variante_id, -- <--- USAR EL ID DE LA VARIANTE
+            vd.cantidad, vd.precio_unitario_cobrado, 
             vd.costo_unitario_historico, vd.subtotal, vd.promocion_id
         FROM public.ventas_cabecera vc
         INNER JOIN public.ventas_detalle vd ON vc.id = vd.venta_id
         INNER JOIN public.metodos_pago mp  ON vc.metodo_pago_id = mp.id
-        INNER JOIN public.variantes v      ON vd.variante_id = v.id
     """
     df = pd.read_sql(query_origen, engine)
 
@@ -45,10 +45,12 @@ def cargar_fact_ventas():
     
     # Usar transacción para mejor rendimiento
     with engine.begin() as conn:
+        conn.execute(text("TRUNCATE TABLE dw.fact_ventas CASCADE"))
+
         for _, row in df.iterrows():
             try:
                 # Lookups
-                id_p = map_producto.get(row["producto_id"])
+                id_p = map_producto.get(row["variante_id"])                
                 id_c = map_cliente.get(row["cliente_id"])
                 id_s = map_sucursal.get(row["sucursal_id"])
                 id_e = map_empleado.get(row["empleado_id"])
@@ -60,6 +62,7 @@ def cargar_fact_ventas():
                 id_promo = map_promocion.get(row["promocion_id"]) if pd.notna(row["promocion_id"]) else None
 
                 # Fecha a ID_Tiempo e ID degenerado
+                fecha = row["fecha_hora"].date()
                 id_tiempo = int(row["fecha_hora"].strftime("%Y%m%d"))
                 nro_ticket = f"V-{row['venta_id']}"
 
@@ -67,22 +70,33 @@ def cargar_fact_ventas():
                 if any(x is None for x in [id_p, id_c, id_s, id_e, id_can, id_mp]):
                     print(f"DEBUG: Venta {row['venta_id']} saltada. Producto: {id_p}, Cliente: {id_c}, Sucursal: {id_s}")
                     continue
-
                 insert_query = text("""
                     INSERT INTO dw.fact_ventas (
-                        id_producto, id_cliente, id_tiempo, id_sucursal,
+                        id_producto, id_cliente, id_tiempo, fecha, id_sucursal,
                         id_empleado, id_promocion, id_canal, id_metodo_pago,
                         cantidad, precio_unitario_cobrado, costo_historico,
                         subtotal, nro_ticket
-                    ) VALUES (:id_p, :id_c, :id_t, :id_s, :id_e, :id_promo, :id_can, :id_mp, 
-                              :cant, :precio, :costo, :subtotal, :ticket)
-                """)
-                
+                    ) VALUES (
+                        :id_p, :id_c, :id_t, :fecha, :id_s,
+                        :id_e, :id_promo, :id_can, :id_mp, 
+                        :cant, :precio, :costo, :subtotal, :ticket
+                    )
+                    """)
+
                 conn.execute(insert_query, {
-                    'id_p': id_p, 'id_c': id_c, 'id_t': id_tiempo, 'id_s': id_s,
-                    'id_e': id_e, 'id_promo': id_promo, 'id_can': id_can, 'id_mp': id_mp,
-                    'cant': row["cantidad"], 'precio': row["precio_unitario_cobrado"],
-                    'costo': row["costo_unitario_historico"], 'subtotal': row["subtotal"],
+                    'id_p': id_p,
+                    'id_c': id_c,
+                    'id_t': id_tiempo,
+                    'fecha': fecha,
+                    'id_s': id_s,
+                    'id_e': id_e,
+                    'id_promo': id_promo,
+                    'id_can': id_can,
+                    'id_mp': id_mp,
+                    'cant': row["cantidad"],
+                    'precio': row["precio_unitario_cobrado"],
+                    'costo': row["costo_unitario_historico"],
+                    'subtotal': row["subtotal"],
                     'ticket': nro_ticket
                 })
 
