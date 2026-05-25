@@ -17,7 +17,7 @@ def seed_geo():
         data_provs= requests.get(url_provs).json()
 
         for p in data_provs['provincias']:
-            # Usamos ON CONFLICT para no duplicar si ejecutas el script dos veces
+            # Usamos ON CONFLICT para no duplicar si se ejecuta el script dos veces
             cur.execute("""
             INSERT INTO provincias (nombre) 
             VALUES (%s) 
