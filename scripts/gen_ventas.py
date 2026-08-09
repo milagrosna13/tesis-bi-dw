@@ -93,32 +93,65 @@ def generar_ventas_csv():
 
     data_ventas=[]
     fecha_inicio=datetime(2024,1,1)
+    dias_totales = 700
+    
+    fechas_posibles = []
+    pesos_fechas = []
+    
+    for d in range(dias_totales):
+        fecha_actual = fecha_inicio + timedelta(days=d)
+        peso = 10 # Peso base para un día normal
+        
+        # --- ESTACIONALIDAD MENSUAL ---
+        mes = fecha_actual.month
+        if mes == 12: 
+            peso += 20 # Súper pico en Diciembre (Fiestas)
+        elif mes in [5, 6]: 
+            peso += 10 # Pico por cambio de temporada invierno
+        elif mes in [1, 2]: 
+            peso -= 5  # Baja de ventas en Enero/Febrero
+            
+        # --- ESTACIONALIDAD SEMANAL ---
+        dia_semana = fecha_actual.weekday() # 0 = Lunes, 6 = Domingo
+        if dia_semana in [4, 5]: 
+            peso += 15 # Fuerte incremento Viernes y Sábado
+        elif dia_semana == 6: 
+            peso -= 8  # Domingo flojo o cerrado (baja probabilidad)
+            
+        fechas_posibles.append(fecha_actual)
+        pesos_fechas.append(max(1, peso)) # Asegurarnos que el peso nunca sea menor a 1
+
+    
+
     # 
     for ticket_nro in range(1,3001):
-        #datos de la venta cabecera
-        fecha=fecha_inicio + timedelta(
-            #700 dias 2 años aprox, 24hs en minutos
-            days=random.randint(0,700),
-            minutes=random.randint(0,1440)
-        )
-        fecha_venta_dt = fecha.date()
-                
-        clientes_validos = [dni for dni, f_alta in info_clientes.items() if f_alta.date() <= fecha_venta_dt]
-        if not clientes_validos:
-            continue # Si en esa fecha no había clientes, saltamos
-        dni = random.choice(clientes_validos)
-        metodo_pago=random.choice([1,2,3,4,5])
-        # Determinar canal y sucursal
+        # 1. PRIMERO DEFINIMOS EL CANAL Y SUCURSAL (para saber en qué horario pueden comprar)
         canales = ['Presencial', 'Web']
-        canal = random.choices(
-            canales, 
-            weights=[60, 40]  
-        )[0]
+        canal = random.choices(canales, weights=[60, 40])[0]
         
         if canal == 'Web':
             sucursal = 'Tienda Online'
         else:  # Presencial
             sucursal = random.choice(['Centro', 'Norte', 'Shopping'])
+
+        # 2. ELEGIMOS EL DÍA (Acá usamos lista con pesos para que haya estacionalidad)
+        fecha_base = random.choices(fechas_posibles, weights=pesos_fechas)[0]
+        
+        # 3. ASIGNAMOS LA HORA (Web a cualquier hora, Presencial en horario comercial)
+        if canal == 'Web':
+            minutos = random.randint(0, 1439) # Cualquier hora del día
+        else:
+            minutos = random.randint(540, 1200) # Local físico: de 9hs a 20hs
+            
+        fecha = fecha_base + timedelta(minutes=minutos)
+        fecha_venta_dt = fecha.date()
+                
+        # 4. BUSCAMOS CLIENTES 
+        clientes_validos = [dni for dni, f_alta in info_clientes.items() if f_alta.date() <= fecha_venta_dt]
+        if not clientes_validos:
+            continue # Si en esa fecha no había clientes, saltamos
+        dni = random.choice(clientes_validos)
+        metodo_pago = random.choice([1,2,3,4,5])
 
         empleados_sucursal = empleados_por_sucursal.get(sucursal)
 
