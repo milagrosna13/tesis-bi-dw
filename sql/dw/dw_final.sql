@@ -144,8 +144,8 @@ FROM generate_series(
     '1 day'::interval
 ) AS fecha;
 
--- Las tablas Dim_Canal y Dim_Metodo_pago deberían poblarse desde Python, 
--- pero si tu estrategia es cargarlas en este paso, aquí está el SQL:
+
+
 INSERT INTO dw.Dim_Metodo_Pago (metodo_pago)
 SELECT nombre FROM public.metodos_pago;
 

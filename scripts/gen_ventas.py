@@ -146,10 +146,10 @@ def generar_ventas_csv():
         fecha = fecha_base + timedelta(minutes=minutos)
         fecha_venta_dt = fecha.date()
                 
-        # 4. BUSCAMOS CLIENTES 
+        # BUSCAMOS CLIENTES 
         clientes_validos = [dni for dni, f_alta in info_clientes.items() if f_alta.date() <= fecha_venta_dt]
         if not clientes_validos:
-            continue # Si en esa fecha no había clientes, saltamos
+            continue # si en esa fecha no había clientes, saltamos
         dni = random.choice(clientes_validos)
         metodo_pago = random.choice([1,2,3,4,5])
 
